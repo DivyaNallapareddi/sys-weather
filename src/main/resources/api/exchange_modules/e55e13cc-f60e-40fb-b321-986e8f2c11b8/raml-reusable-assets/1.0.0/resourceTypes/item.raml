@@ -1,0 +1,32 @@
+#%RAML 1.0 ResourceType
+usage: Use this resourceType for an item
+get?:
+  displayName: Get <<resourcePathName|!uppercamelcase|!singularize>>
+  responses:
+   200:
+     body: 
+      application/json:
+        type: <<typeName>>            
+
+patch?:        
+  displayName: Update a <<resourcePathName|!uppercamelcase|!singularize>>
+  body:
+    application/json:
+      type: <<typeName>>
+
+post?:
+  description: Create a new <<resourcePathName|!uppercamelcase|!singularize>>
+  body:
+    application/json:
+      type: <<typeName>>
+  responses:
+   201:
+
+put?:
+  displayName: Update a <<resourcePathName|!uppercamelcase|!singularize>>
+  body:
+    application/json:
+      type: <<typeName>>
+
+delete?:
+  displayName: Delete <<resourcePathName|!uppercamelcase|!singularize>>  

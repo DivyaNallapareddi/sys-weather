@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getCities" doc:id="072ac630-4c66-4ee1-bd65-a72977358f26" >
+		<logger level="INFO" doc:name="Logger" doc:id="582b38c7-2d5b-48f7-8172-f94c2141c0d3" message='#[output application/json --- 
+{
+	correlationId : correlationId,
+	message : "sending request to get Cities for the country " ++ attributes.uriParams.country	
+}]'/>
+		<ee:transform doc:name="Transform Message" doc:id="e3cfed7b-b806-4ac9-a4f4-3042e80a6c63" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns web  http://www.webserviceX.NET
+---
+{
+
+web#GetCitiesByCountry : 
+
+	{
+	web#CountryName : attributes.uriParams.country default ""
+		
+	}
+
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetCitiesByCountry" doc:name="Consume" doc:id="33f74a84-e16d-46db-b78d-7b1de367cdd0" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="c1047f82-376f-4bac-9ac2-a6043459b5a1">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var tables = (read (((((payload.body.GetCitiesByCountryResponse) replace "&lt;" with "<") replace "&gt;" with ">") replace "\n" with ""), "application/xml")).NewDataSet.*Table
+---
+
+{
+	"country": tables.Country[0],
+	"cities": tables.City
+	}
+	
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="64ed9a6f-4590-49a4-a9b5-e42c19689e84" message='#[output application/json --- 
+{
+	correlationId : correlationId,
+	message : "Got cities for the country "
+}]' />
+	</flow>
+	<flow name="getWeather" doc:id="431201c4-2bea-4b83-8eb6-23ebfb179f0a" >
+		<logger level="INFO" doc:name="Logger" doc:id="f5566f36-20c1-4832-85d1-94501f8e29e9" message='#[output application/json --- 
+{
+	correlationId : correlationId,
+	message : "sending request to get weather details"
+}]'/>
+		<choice doc:name="Choice" doc:id="713beca1-ed7f-4eb5-8f1c-1496e27fbd9a" >
+			<when expression="#[(attributes.queryParams.city != null) or (attributes.queryParams.country != null)]">
+			<ee:transform doc:name="Transform Message" doc:id="d7a821c5-e0b8-4b71-b1d1-bdc8acabcf33" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns web  http://www.webserviceX.NET
+---
+{
+
+web#GetWeather : 
+
+	{
+	web#CityName : attributes.queryParams.city default "",
+		web#CountryName : attributes.queryParams.country default ""
+		
+	}
+
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetWeather" doc:name="Consume" doc:id="8311dfa8-57ee-4e52-854d-9bcbec6471df" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="5bf4ba12-97b2-400d-b055-6bac554c8ef6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(read( (((((payload.body.GetWeatherResponse)[9 to -5]) replace "&lt;" with "<") replace "&gt;" with ">") replace "\n" with ""),"application/xml")).NewDataSet]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="f105a1e5-98c6-4af7-b811-45c72035049b" message='#[output application/json --- 
+{
+	correlationId : correlationId,
+	message : "Got weather details "
+}]'/>
+			
+			</when>
+			
+			
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="0e5e6601-0644-4cfd-9b93-e97d8d127ef2" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "city/country query parameter(s) is mandatory"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="400" doc:name="httpStatus" doc:id="5fb9d2d2-b31f-4b61-847a-03e9d0062ad5" variableName="httpStatus"/>
+				<logger level="INFO" doc:name="Logger" doc:id="6d9df927-6382-479f-b40f-02525a223ba0" message='#[output application/json --- 
+{
+	correlationId : correlationId,
+	message : "city/country query parameter(s) is mandatory"
+}]'/>
+			</otherwise>
+		</choice>
+			</flow>
+</mule>

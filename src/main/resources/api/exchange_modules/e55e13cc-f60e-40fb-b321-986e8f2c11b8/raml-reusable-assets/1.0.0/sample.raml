@@ -1,0 +1,36 @@
+#%RAML 1.0
+title: RAML Reusable Assets
+description: This API Specification can be imported by other RAML Specification to simplify your RAML with the use of Resource Types and Traits.
+version: v1.0
+baseUri: /
+mediaType: application/json
+
+documentation:
+  - title: Title of an API
+    content: Details about an API
+
+uses:  
+  lib: raml-reusable-assets.raml
+  
+/{version}:
+  /about:
+    securedBy: [lib.basic]
+    type: 
+      lib.item:
+        typeName: lib.about
+    get:
+      displayName: Information about application
+      description: This end point provides information about Mule application which can be used to determine availablity of the application.
+      is: [lib.traceable, lib.hasErrors]
+
+
+
+
+
+
+
+
+
+
+
+

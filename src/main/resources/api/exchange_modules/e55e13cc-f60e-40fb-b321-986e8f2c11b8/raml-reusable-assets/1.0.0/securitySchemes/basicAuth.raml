@@ -1,0 +1,17 @@
+#%RAML 1.0 SecurityScheme
+type:  Basic Authentication
+description:  Each request must contain the headers necessary for
+                 basic authentication
+describedBy:
+   headers:
+        Authorization:
+          description: Used to send the Base64-encoded "username:password"
+                       credentials. For cloudhub version it is client_id:client_secret
+          type: string
+   responses:
+     401:
+       description:  
+            Unauthorized. Either the provided username and password
+            combination is invalid, or the user is not allowed to access
+            the content provided by the requested URL.     
+

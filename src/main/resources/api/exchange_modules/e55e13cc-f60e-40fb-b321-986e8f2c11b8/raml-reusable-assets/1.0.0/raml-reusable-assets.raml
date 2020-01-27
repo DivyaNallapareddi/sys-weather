@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+usage: This library imports all common raml fragments so that it can be imported as single file in a project
+
+types:
+  about: !include dataTypes/about.raml
+
+securitySchemes:
+  basic: !include securitySchemes/basicAuth.raml
+
+resourceTypes:
+  item: !include resourceTypes/item.raml
+
+traits:
+  hasResponseItem: !include traits/hasReponseItem.raml
+  hasRequestProcessed: !include traits/hasRequestProcessed.raml
+  hasErrors: !include traits/hasErrors.raml
+  traceable: !include traits/traceable.raml

@@ -1,0 +1,24 @@
+#%RAML 1.0 DataType
+type: object
+additionalProperties: true
+properties:
+  project: string
+  description: string
+  muleVersion: string
+  javaVersion: string
+  muleEnv: string
+  hostName: string
+  logLevel: string
+  dateTime: datetime-only
+  timeZone: string 
+example:
+  project: project-name
+  description: Description of project
+  muleVersion: 4.2.2
+  javaVersion: 1.8.0.211
+  muleEnv: local
+  hostName: localhost
+  logLevel: INFO
+  dateTime: 2020-01-24T00:00:00
+  timeZone: GMT
+

@@ -1,0 +1,9 @@
+http:
+      port : "8081"
+api:
+     id: "15971908"
+wsdl:
+      location: 'wsdl\global-weather.wsdl'
+      service: "GlobalWeather"
+      port: "GlobalWeatherHttpGet"
+      address: "http://localhost:8080/GlobalWeather"   

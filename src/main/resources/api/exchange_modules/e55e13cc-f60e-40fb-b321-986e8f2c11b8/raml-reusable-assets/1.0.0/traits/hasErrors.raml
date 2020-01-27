@@ -1,0 +1,67 @@
+#%RAML 1.0 Trait    
+responses:
+  400:
+    body:
+      application/json:
+        type: object
+        properties:
+          status: 
+            type: number
+            example: 400
+          title: 
+            type: string
+            example: Bad request
+          errors: 
+            required: false
+            type: string[]
+            example: ["Value is empty"]
+
+  404:
+    body:
+      application/json:
+        type: object
+        properties:
+          status: 
+            type: number
+            example: 404
+          title: 
+            type: string
+            example: Resource not found
+  415:
+    body:
+      application/json:
+        type: object
+        properties:
+          status: 
+            type: number
+            example: 415
+          title: 
+            type: string
+            example: Unsupported media type
+  501:
+    body:
+      application/json:
+        type: object
+        properties:
+          status: 
+            type: number
+            example: 501
+          title: 
+            type: string
+            example: Not Implemented
+  500:
+    body:
+      application/json:
+        type: object
+        properties:
+          status: 
+            type: number
+            example: 500
+          title: 
+            type: string
+            example: A server error occured
+          errors: 
+            required: true
+            type: string[]
+
+
